@@ -1,0 +1,9 @@
+// Sass for videojs-settings-menu
+
+.video-js {
+
+  // This class is added to the video.js element by the plugin by default.
+  &.vjs-settings-menu {
+    display: block;
+  }
+}
