@@ -38,7 +38,7 @@
     "videojs",
     "videojs-plugin"
   ],
-  "author": "Hero van Commenée <hero@streamone.nl>",
+  "author": "Fruitsapje <hero@streamone.nl>",
   "license": "MIT",
   "browserify": {
     "transform": [
