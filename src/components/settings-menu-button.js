@@ -18,10 +18,10 @@ const Component = videojs.getComponent('Component');
  */
 class SettingsMenuButton extends MenuButton {
 
-  constructor(player, options){
+  constructor(player, options) {
     super(player, options);
 
-    this.el_.setAttribute('aria-label','Settings Menu');
+    this.el_.setAttribute('aria-label', 'Settings Menu');
 
     this.on('mouseleave', videojs.bind(this, this.hideChildren));
   }
@@ -33,6 +33,7 @@ class SettingsMenuButton extends MenuButton {
    * @method buildCSSClass
    */
   buildCSSClass() {
+    // vjs-icon-cog can be removed when the settings menu is integrated in video.js
     return `vjs-settings-menu vjs-icon-cog ${super.buildCSSClass()}`;
   }
 
@@ -49,9 +50,12 @@ class SettingsMenuButton extends MenuButton {
     if (entries) {
       for (let entry of entries) {
 
-        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry)
+        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry);
 
         menu.addChild(settingsMenuItem);
+
+        // Hide children to avoid sub menus stacking on top of each other
+        // or having multiple menus open
         settingsMenuItem.on('menuitemclicked', videojs.bind(this, this.hideChildren));
       }
     }
@@ -63,8 +67,7 @@ class SettingsMenuButton extends MenuButton {
    * Hide all the sub menus
    */
   hideChildren() {
-    for (let menuChild of this.menu.children())
-    {
+    for (let menuChild of this.menu.children()) {
       menuChild.hideSubMenu();
     }
   }
