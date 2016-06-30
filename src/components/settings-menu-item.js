@@ -6,9 +6,6 @@ import videojs from 'video.js';
 
 const MenuItem = videojs.getComponent('MenuItem');
 const playbackRateMenuButton = videojs.getComponent('PlaybackRateMenuButton');
-const settingsSubMenuTitleEl = Symbol('settingsSubMenuTitleEl');
-const settingsSubMenuEl = Symbol('settingsSubMenuEl');
-const settingsSubMenuValueEl = Symbol('settingsSubMenuValueEl');
 
 const toTitleCase = function(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -46,7 +43,7 @@ class SettingsMenuItem extends MenuItem {
     };
 
     for (let item of this.subMenu.menu.children()) {
-      item.on('menuitemclicked', updateAfterTimeout);
+      item.on('click', updateAfterTimeout);
     }
 
     this.update();
@@ -64,23 +61,23 @@ class SettingsMenuItem extends MenuItem {
       className: 'vjs-menu-item'
     });
 
-    this[settingsSubMenuTitleEl] = videojs.createEl('div', {
+    this.settingsSubMenuTitleEl_ = videojs.createEl('div', {
       className: 'vjs-settings-sub-menu-title'
     });
 
-    el.appendChild(this[settingsSubMenuTitleEl]);
+    el.appendChild(this.settingsSubMenuTitleEl_);
 
-    this[settingsSubMenuValueEl] = videojs.createEl('div', {
+    this.settingsSubMenuValueEl_ = videojs.createEl('div', {
       className: 'vjs-settings-sub-menu-value'
     });
 
-    el.appendChild(this[settingsSubMenuValueEl]);
+    el.appendChild(this.settingsSubMenuValueEl_);
 
-    this[settingsSubMenuEl] = videojs.createEl('div', {
+    this.settingsSubMenuEl_ = videojs.createEl('div', {
       className: 'vjs-settings-sub-menu vjs-hidden'
     });
 
-    el.appendChild(this[settingsSubMenuEl]);
+    el.appendChild(this.settingsSubMenuEl_);
 
     return el;
   }
@@ -91,13 +88,16 @@ class SettingsMenuItem extends MenuItem {
    * @method handleClick
    */
   handleClick() {
+    // Remove open class to ensure only the open submenu gets this class
+    videojs.removeClass(this.el_, 'open');
+
     super.handleClick();
 
-    // Wether to add or remove vjs-hdiden class on the settingsSubMenuEl element
-    if (videojs.hasClass(this[settingsSubMenuEl], 'vjs-hidden')) {
-      videojs.removeClass(this[settingsSubMenuEl], 'vjs-hidden');
+    // Wether to add or remove vjs-hidden class on the settingsSubMenuEl element
+    if (videojs.hasClass(this.settingsSubMenuEl_, 'vjs-hidden')) {
+      videojs.removeClass(this.settingsSubMenuEl_, 'vjs-hidden');
     } else {
-      videojs.addClass(this[settingsSubMenuEl], 'vjs-hidden');
+      videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
     }
   }
 
@@ -107,20 +107,20 @@ class SettingsMenuItem extends MenuItem {
    * @method update
    */
   update() {
-    this[settingsSubMenuTitleEl].innerHTML = this.subMenu.controlText_ + ':';
-    this[settingsSubMenuEl].appendChild(this.subMenu.menu.el_);
+    this.settingsSubMenuTitleEl_.innerHTML = this.subMenu.controlText_ + ':';
+    this.settingsSubMenuEl_.appendChild(this.subMenu.menu.el_);
 
     // Playback rate menu button doesn't get a vjs-selected class
     // or sets options_['selected'] on the selected playback rate.
     // Thus we get the submenu value based on the labelEl of playbackRateMenuButton
     if (this.subMenu instanceof playbackRateMenuButton) {
-      this[settingsSubMenuValueEl].innerHTML = this.subMenu.labelEl_.innerHTML;
+      this.settingsSubMenuValueEl_.innerHTML = this.subMenu.labelEl_.innerHTML;
     } else {
       // Loop trough the submenu items to find the selected child
       for (let subMenuItem of this.subMenu.menu.children_) {
         // Set submenu value based on what item is selected
         if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
-          this[settingsSubMenuValueEl].innerHTML = subMenuItem.options_.label;
+          this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
         }
       }
     }
@@ -130,7 +130,10 @@ class SettingsMenuItem extends MenuItem {
    * Hide the sub menu
    */
   hideSubMenu() {
-    videojs.addClass(this[settingsSubMenuEl], 'vjs-hidden');
+    if (videojs.hasClass(this.el_, 'open')) {
+      videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
+      videojs.removeClass(this.el_, 'open');
+    }
   }
 
 }

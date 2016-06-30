@@ -48,6 +48,17 @@ class SettingsMenuButton extends MenuButton {
     let entries = this.options_.entries;
 
     if (entries) {
+
+      const openSubMenu = function() {
+
+        if (videojs.hasClass(this.el_, 'open')) {
+          videojs.removeClass(this.el_, 'open');
+        } else {
+          videojs.addClass(this.el_, 'open');
+        }
+
+      };
+
       for (let entry of entries) {
 
         let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry);
@@ -56,7 +67,10 @@ class SettingsMenuButton extends MenuButton {
 
         // Hide children to avoid sub menus stacking on top of each other
         // or having multiple menus open
-        settingsMenuItem.on('menuitemclicked', videojs.bind(this, this.hideChildren));
+        settingsMenuItem.on('click', videojs.bind(this, this.hideChildren));
+
+        // Wether to add or remove selected class on the settings sub menu element
+        settingsMenuItem.on('click', openSubMenu);
       }
     }
 
