@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-settings-menu Demo</title>
+  <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
+  <link href="/dist/videojs-settings-menu.css" rel="stylesheet">
+</head>
+<body>
+  <video id="videojs-settings-menu-player" class="video-js vjs-default-skin" controls>
+    <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+    <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+
+    <track kind="subtitles" src="example-captions.vtt" srclang="en" label="English">
+  </video>
+  <ul>
+    <li><a href="/test/">Run unit tests in browser.</a></li>
+    <li><a href="/docs/api/">Read generated docs.</a></li>
+  </ul>
+  <script src="/node_modules/video.js/dist/video.js"></script>
+  <script src="/dist/videojs-settings-menu.js"></script>
+  <script>
+    (function(window, videojs) {
+      var player = window.player = videojs('videojs-settings-menu-player', {
+        'playbackRates': [0.5, 1, 1.5, 2],
+        controlBar: {
+          children: {
+              'playToggle':{},
+              'muteToggle':{},
+              'volumeControl':{},
+              'currentTimeDisplay':{},
+              'timeDivider':{},
+              'durationDisplay':{},
+              'liveDisplay':{},
+
+              'flexibleWidthSpacer':{},
+              'progressControl':{},
+
+              'settingsMenuButton': {
+                  entries : [
+                      'subtitlesButton',
+                      // 'captionsButton',
+                      'playbackRateMenuButton'
+                  ]
+              },
+              'fullscreenToggle':{}
+          }
+        }
+      });
+      player.play();
+    }(window, window.videojs));
+  </script>
+</body>
+</html>
