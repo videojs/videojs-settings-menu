@@ -4,9 +4,8 @@ import QUnit from 'qunit';
 import sinon from 'sinon';
 import videojs from 'video.js';
 
-// import plugin from '../src/plugin';
-
-// const Player = videojs.getComponent('Player');
+import SettingsMenuButton from '../src/components/settings-menu-button';
+import SettingsMenuItem from '../src/components/settings-menu-item';
 
 QUnit.module('videojs-settings-menu', {
 
@@ -28,4 +27,24 @@ QUnit.module('videojs-settings-menu', {
     this.player.dispose();
     this.clock.restore();
   }
+});
+
+QUnit.test('It registers the settings menu button component', function(assert) {
+  assert.expect(1);
+
+  assert.strictEqual(
+    videojs.getComponent('SettingsMenuButton'),
+    SettingsMenuButton,
+    'Settings menu button was registered'
+  );
+});
+
+QUnit.test('It registers the settings menu item component', function(assert) {
+  assert.expect(1);
+
+  assert.strictEqual(
+    videojs.getComponent('SettingsMenuItem'),
+    SettingsMenuItem,
+    'Settings menu item was registered'
+  );
 });
