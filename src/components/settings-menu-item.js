@@ -6,6 +6,7 @@ import videojs from 'video.js';
 
 const MenuItem = videojs.getComponent('MenuItem');
 const playbackRateMenuButton = videojs.getComponent('PlaybackRateMenuButton');
+const component = videojs.getComponent('Component');
 
 const toTitleCase = function(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -43,6 +44,9 @@ class SettingsMenuItem extends MenuItem {
     };
 
     for (let item of this.subMenu.menu.children()) {
+      if (!(item instanceof component)) {
+        continue;
+      }
       item.on('click', updateAfterTimeout);
     }
 
@@ -118,6 +122,9 @@ class SettingsMenuItem extends MenuItem {
     } else {
       // Loop trough the submenu items to find the selected child
       for (let subMenuItem of this.subMenu.menu.children_) {
+        if (!(subMenuItem instanceof component)) {
+          continue;
+        }
         // Set submenu value based on what item is selected
         if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
           this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
