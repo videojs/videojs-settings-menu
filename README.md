@@ -2,6 +2,10 @@
 
 A plugin to create a settings menu consisting of sub menus for the video.js controlbar
 
+Lead Maintainer: [@Fruitsapje](https://github.com/Fruitsapje)
+
+Maintenance Status: Experimental
+
 ## Table of Contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
