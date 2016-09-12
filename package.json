@@ -1,6 +1,6 @@
 {
   "name": "videojs-settings-menu",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Settings menu for the video.js controlbar",
   "main": "es5/plugin.js",
   "scripts": {
