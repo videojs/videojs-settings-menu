@@ -46,4 +46,43 @@
 		width: 8em;
 		text-transform: initial;
 	}
+
+  .vjs-settings-dialog {
+    position: absolute;
+    right: 1em;
+    bottom: 3.5em;
+    background-color: #2B333F;
+    background-color: rgba(43, 51, 63, 0.75);
+    color: #fff;
+    margin: 0 auto;
+    padding: 0.5em;
+    font-size: 12px;
+    width: auto;
+
+    -webkit-transition: width 1s ease-in-out,  height 1s ease-in-out;
+    transition: width 1s ease-in-out,  height 1s ease-in-out;
+
+    .vjs-settings-panel {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-width: 1000px;
+
+      &:focus,
+      &:active {
+        outline: none;
+      }
+
+      > .vjs-menu {
+        min-width: 300px;
+      }
+
+      > .vjs-menu,
+      > .vjs-settings-sub-menu {
+        float: right;
+      }
+    }
+  }
 }

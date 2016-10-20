@@ -26,6 +26,12 @@ class SettingsMenuItem extends MenuItem {
   constructor(player, options, entry) {
     super(player, options);
 
+    const dialog = player.getChild('settingsDialog');
+    this.panel = dialog.getChild('settingsPanel');
+    this.panelEl = this.panel.el_;
+
+    console.log('11 constructor ');
+
     const subMenuName = toTitleCase(entry);
 
     const SubMenuComponent = videojs.getComponent(subMenuName);
@@ -60,6 +66,7 @@ class SettingsMenuItem extends MenuItem {
    * @method createEl
    */
   createEl() {
+    console.log('createEl');
     // Hide this component by default
     const el = videojs.createEl('li', {
       className: 'vjs-menu-item'
@@ -81,7 +88,7 @@ class SettingsMenuItem extends MenuItem {
       className: 'vjs-settings-sub-menu vjs-hidden'
     });
 
-    el.appendChild(this.settingsSubMenuEl_);
+    // el.appendChild(this.settingsSubMenuEl_);
 
     return el;
   }
@@ -111,8 +118,10 @@ class SettingsMenuItem extends MenuItem {
    * @method update
    */
   update() {
+    console.log('update');
     this.settingsSubMenuTitleEl_.innerHTML = this.subMenu.controlText_ + ':';
     this.settingsSubMenuEl_.appendChild(this.subMenu.menu.el_);
+    this.panelEl.appendChild(this.settingsSubMenuEl_);
 
     // Playback rate menu button doesn't get a vjs-selected class
     // or sets options_['selected'] on the selected playback rate.

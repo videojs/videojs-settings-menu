@@ -32,7 +32,8 @@
     "preversion": "npm test",
     "version": "babel-node scripts/version.js",
     "postversion": "babel-node scripts/postversion.js",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "watch:js": "watch \"npm-run-all build:js:babel build:js:browserify\" ./src"
   },
   "keywords": [
     "videojs",
@@ -107,6 +108,7 @@
     "sinon": "~1.14.0",
     "uglify-js": "^2.6.1",
     "videojs-languages": "^1.0.0",
-    "videojs-standard": "^4.0.0"
+    "videojs-standard": "^4.0.0",
+    "watch": "^1.0.1"
   }
 }
