@@ -15,12 +15,9 @@ class SettingsButton extends Button {
 
     this.dialog = player.addChild('settingsDialog');
     this.dialogEl = this.dialog.el_;
-    this.dialogWidth = null;
     this.menu = null;
 
     this.panel = this.dialog.addChild('settingsPanel');
-
-    // console.log('constructor');
 
     this.el_.setAttribute('aria-label', 'Settings Button');
     this.buildMenu();
@@ -30,11 +27,6 @@ class SettingsButton extends Button {
     // vjs-icon-cog can be removed when the settings menu is integrated in video.js
     return `vjs-icon-cog ${super.buildCSSClass()}`;
   }
-
-  // createEl() {
-  //   super.createEl();
-  //   console.log('createEl');
-  // }
 
   handleClick() {
     if (this.dialog.hasClass('vjs-hidden')) {
@@ -46,9 +38,24 @@ class SettingsButton extends Button {
     }
   }
 
-  getComponentSize(component) {
-    let width = component.el_.offsetWidth;
-    let height = component.el_.offsetHeight;
+  getComponentSize(element) {
+    let width = null;
+    let height = null;
+
+    // Could be component or just DOM element
+    if (element instanceof Component) {
+      width = element.el_.offsetWidth;
+      height = element.el_.offsetHeight;
+
+      // keep width/height as properties for direct use
+      element.width = width;
+      element.height = height;
+    }
+    else {
+      width = element.offsetWidth;
+      height = element.offsetHeight;
+    }
+
     return [width, height];
   }
 
@@ -59,10 +66,10 @@ class SettingsButton extends Button {
 
   buildMenu() {
     this.menu = new Menu(this.player());
+    this.menu.addClass('vjs-main-menu');
     let entries = this.options_.entries;
 
     if (entries) {
-
       const openSubMenu = function() {
 
         if (videojs.hasClass(this.el_, 'open')) {
@@ -75,22 +82,31 @@ class SettingsButton extends Button {
 
       for (let entry of entries) {
 
-        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry);
+        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry, this);
 
-         this.menu.addChild(settingsMenuItem);
+        this.menu.addChild(settingsMenuItem);
 
         // Hide children to avoid sub menus stacking on top of each other
         // or having multiple menus open
-        // settingsMenuItem.on('click', videojs.bind(this, this.hideChildren));
+        settingsMenuItem.on('click', videojs.bind(this, this.hideChildren));
 
         // Wether to add or remove selected class on the settings sub menu element
-        // settingsMenuItem.on('click', openSubMenu);
+        settingsMenuItem.on('click', openSubMenu);
       }
     }
 
-    // console.log(this.dialog);
     this.panel.addChild(this.menu);
 
+  }
+
+  /**
+   * Hide all the sub menus
+   */
+  hideChildren() {
+    console.log('hideChildren');
+    for (let menuChild of this.menu.children()) {
+      menuChild.hideSubMenu();
+    }
   }
 
 }
@@ -161,7 +177,7 @@ class SettingsMenuButton extends MenuButton {
 
     this.el_.setAttribute('aria-label', 'Settings Menu');
 
-    // this.on('mouseleave', videojs.bind(this, this.hideChildren));
+    this.on('mouseleave', videojs.bind(this, this.hideChildren));
   }
 
   /**
