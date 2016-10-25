@@ -32,10 +32,8 @@ class SettingsMenuItem extends MenuItem {
 
     this.panel = this.dialog.getChild('settingsPanel');
     this.panelEl = this.panel.el_;
-    this.handleBackClick = this.onBackClick.bind(this);
-    this.transitionEndHandler = this.onTransitionEnd.bind(this);
     this.size = null;
-    this.firstInit = true;
+    this.firstLoad = true;
 
     const subMenuName = toTitleCase(entry);
     const SubMenuComponent = videojs.getComponent(subMenuName);
@@ -62,8 +60,20 @@ class SettingsMenuItem extends MenuItem {
       item.on('click', updateAfterTimeout);
     }
 
+    this.eventHandlers();
+
     // updating the value is not instant
     setTimeout(update, 20);
+  }
+
+  /**
+   * Setup event handlers
+   *
+   * @method eventHandlers
+   */
+  eventHandlers() {
+    this.backClickHandler = this.onBackClick.bind(this);
+    this.transitionEndHandler = this.onTransitionEnd.bind(this);
   }
 
   /**
@@ -94,8 +104,6 @@ class SettingsMenuItem extends MenuItem {
       className: 'vjs-settings-sub-menu'
     });
 
-    // el.appendChild(this.settingsSubMenuEl_);
-
     return el;
   }
 
@@ -124,6 +132,7 @@ class SettingsMenuItem extends MenuItem {
       // animation not played without timeout
       setTimeout(() => {
         this.settingsSubMenuEl_.style.opacity = '1';
+        this.settingsSubMenuEl_.style.marginRight = '';
       }, 0);
 
       this.settingsButton.setDialogSize(this.size);
@@ -133,17 +142,26 @@ class SettingsMenuItem extends MenuItem {
     }
   }
 
+  /**
+   * Create back button
+   *
+   * @method createBackButton
+   */
   createBackButton() {
-    // Back button for submenu section
     this.backButton = this.subMenu.menu.addChild('MenuItem', {}, 0);
     this.backButton.name_ = 'BackButton';
     this.backButton.addClass('vjs-back-button');
     this.backButton.el_.innerHTML = `Back to Main Menu<span class="vjs-control-text">Back Button</span>`;
     this.backButton.el_.innerText = `Back to Main Menu`;
-    this.backButton.on('click', this.handleBackClick);
+    this.backButton.on('click', this.backClickHandler);
   }
 
-  PrefixedEvent(element, type, callback, action) {
+  /**
+   * Add/remove prefixed event listener for CSS Transition
+   *
+   * @method PrefixedEvent
+   */
+  PrefixedEvent(element, type, callback, action = 'addEvent') {
     let prefix = ["webkit", "moz", "MS", "o", ""];
 
     for (var p = 0; p < prefix.length; p++) {
@@ -161,22 +179,17 @@ class SettingsMenuItem extends MenuItem {
   }
 
   onTransitionEnd() {
-    console.log('onTransitionEnd');
-
     // clear panel styles
     this.panelEl.style.display = '';
 
     // hide current submenu and clear inline style for margin
     videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
-    this.settingsSubMenuEl_.style.marginRight = '';
 
     // remove listener
     this.PrefixedEvent(this.settingsSubMenuEl_, "TransitionEnd", this.transitionEndHandler, 'removeEvent');
   }
 
   onBackClick() {
-    let [width, height] = this.size;
-
     // prefixed event listeners for CSS TransitionEnd
     this.PrefixedEvent(this.settingsSubMenuEl_, "TransitionEnd", this.transitionEndHandler, 'addEvent');
 
@@ -187,7 +200,7 @@ class SettingsMenuItem extends MenuItem {
     this.settingsButton.setDialogSize([this.mainMenu.width, this.mainMenu.height]);
 
     // slide submenu before hiding it - this triggers CSS Transition event
-    this.settingsSubMenuEl_.style.marginRight = `-${width}px`;
+    this.setMargin();
 
     // animation not played without timeout
     setTimeout(() => {
@@ -235,17 +248,27 @@ class SettingsMenuItem extends MenuItem {
       }
     }
 
-    if (this.firstInit) {
-      // save size of submenus on first init
-      // if number of submenu items change dinamically more logic will be needed
+    if (this.firstLoad) {
+      this.initSize();
+    }
+
+  }
+
+  // save size of submenus on first init
+  // if number of submenu items change dinamically more logic will be needed
+  initSize() {
       this.dialog.removeClass('vjs-hidden');
       this.size = this.settingsButton.getComponentSize(this.settingsSubMenuEl_);
+      this.setMargin();
       this.dialog.addClass('vjs-hidden');
       videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
       console.log('size: ', this.size);
-      this.firstInit = false;
-    }
+      this.firstLoad = false;
+  }
 
+  setMargin() {
+    let [width, height] = this.size;
+    this.settingsSubMenuEl_.style.marginRight = `-${width}px`;
   }
 
   /**

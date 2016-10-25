@@ -1,6 +1,7 @@
 /* Sass for videojs-settings-menu*/
 
 $duration: 0.2s;
+$easing: ease-out;
 
 .video-js {
 
@@ -20,9 +21,10 @@ $duration: 0.2s;
     padding: 0.5em;
     font-size: 12px;
     width: auto;
+    overflow: hidden;
 
-    -webkit-transition: width $duration ease-in,  height $duration ease-in;
-    transition: width $duration ease-in,  height $duration ease-in;
+    -webkit-transition: width $duration $easing,  height $duration $easing;
+    transition: width $duration $easing,  height $duration $easing;
 
     .vjs-settings-sub-menu-value,
   	.vjs-settings-sub-menu-title {
@@ -66,8 +68,8 @@ $duration: 0.2s;
 
       > .vjs-menu,
       > .vjs-settings-sub-menu {
-        -webkit-transition: all $duration ease-in;
-        transition: all $duration ease-in;
+        -webkit-transition: all $duration $easing;
+        transition: all $duration $easing;
         float: right;
 
         .vjs-menu-item {
