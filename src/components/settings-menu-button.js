@@ -103,7 +103,6 @@ class SettingsButton extends Button {
    * Hide all the sub menus
    */
   hideChildren() {
-    console.log('hideChildren');
     for (let menuChild of this.menu.children()) {
       menuChild.hideSubMenu();
     }
