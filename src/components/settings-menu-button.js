@@ -13,6 +13,8 @@ class SettingsButton extends Button {
   constructor(player, options) {
     super(player, options);
 
+    this.addClass('vjs-settings');
+
     this.dialog = player.addChild('settingsDialog');
     this.dialogEl = this.dialog.el_;
     this.menu = null;
@@ -21,6 +23,16 @@ class SettingsButton extends Button {
 
     this.el_.setAttribute('aria-label', 'Settings Button');
     this.buildMenu();
+
+    player.on('click', (event) => {
+      if (event.target.classList.contains('vjs-settings')) {
+        return;
+      }
+
+      if (!this.dialog.hasClass('vjs-hidden')) {
+        this.hideDialog();
+      }
+    });
   }
 
   buildCSSClass() {
@@ -30,12 +42,24 @@ class SettingsButton extends Button {
 
   handleClick() {
     if (this.dialog.hasClass('vjs-hidden')) {
-      this.dialog.show();
-      this.setDialogSize(this.getComponentSize(this.menu));
+      this.showDialog();
     }
     else {
-      this.dialog.hide();
+      this.hideDialog();
     }
+  }
+
+  showDialog() {
+    this.menu.el_.style.opacity = '1';
+    this.dialog.show();
+    this.setDialogSize(this.getComponentSize(this.menu));
+  }
+
+  hideDialog() {
+    this.dialog.hide();
+    this.setDialogSize(this.getComponentSize(this.menu));
+    this.menu.el_.style.opacity = '1';
+    this.resetChildren();
   }
 
   getComponentSize(element) {
@@ -97,6 +121,12 @@ class SettingsButton extends Button {
 
     this.panel.addChild(this.menu);
 
+  }
+
+  resetChildren() {
+    for (let menuChild of this.menu.children()) {
+      menuChild.reset();
+    }
   }
 
   /**

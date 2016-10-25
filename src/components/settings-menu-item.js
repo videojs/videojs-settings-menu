@@ -60,7 +60,6 @@ class SettingsMenuItem extends MenuItem {
    */
   eventHandlers() {
     this.submenuClickHandler = this.onSubmenuClick.bind(this);
-    this.backClickHandler = this.onBackButtonClick.bind(this);
     this.transitionEndHandler = this.onTransitionEnd.bind(this);
   }
 
@@ -69,7 +68,7 @@ class SettingsMenuItem extends MenuItem {
     let target = event.currentTarget;
 
     if (target.classList.contains('vjs-back-button')) {
-      this.onBackButtonClick();
+      this.loadMainMenu();
     }
 
     setTimeout(updateFn, 0);
@@ -188,7 +187,13 @@ class SettingsMenuItem extends MenuItem {
     }
   }
 
-  onBackButtonClick() {
+  reset() {
+    this.settingsSubMenuEl_.style.opacity = '0';
+    this.setMargin();
+    this.hideSubMenu();
+  }
+
+  loadMainMenu() {
     this.menuToLoad = 'mainmenu';
     this.mainMenu.show();
     this.mainMenu.el_.style.opacity = '0';
