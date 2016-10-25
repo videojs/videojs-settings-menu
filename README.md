@@ -35,32 +35,32 @@ This is the simplest case. Get the script in whatever way you prefer and include
 <script src="//path/to/video.js"></script>
 <script src="//path/to/videojs-settings-menu.js"></script>
 <script>
-	var player = videojs('videojs-settings-menu-player', {
-		'playbackRates': [0.5, 1, 1.5, 2],
-		controlBar: {
-			children: {
-				'playToggle':{},
-				'muteToggle':{},
-				'volumeControl':{},
-				'currentTimeDisplay':{},
-				'timeDivider':{},
-				'durationDisplay':{},
-				'liveDisplay':{},
+var player = videojs('videojs-settings-menu-player', {
+  'playbackRates': [0.5, 1, 1.5, 2],
+  controlBar: {
+    children: {
+    'playToggle':{},
+    'muteToggle':{},
+    'volumeControl':{},
+    'currentTimeDisplay':{},
+    'timeDivider':{},
+    'durationDisplay':{},
+    'liveDisplay':{},
 
-				'flexibleWidthSpacer':{},
-				'progressControl':{},
+    'flexibleWidthSpacer':{},
+    'progressControl':{},
 
-				'settingsButton': {
-          entries : [
-            'subtitlesButton',
-            'captionsButton',
-            'playbackRateMenuButton'
-          ]
-        },
-				'fullscreenToggle':{}
-			}
-		}
-	});
+    'settingsButton': {
+      entries : [
+          'subtitlesButton',
+          'captionsButton',
+          'playbackRateMenuButton'
+        ]
+      },
+    'fullscreenToggle':{}
+   }
+  }
+});
 </script>
 ```
 
