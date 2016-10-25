@@ -5,50 +5,71 @@
 import videojs from 'video.js';
 import SettingsMenuItem from './settings-menu-item.js';
 const MenuButton = videojs.getComponent('MenuButton');
+const Button = videojs.getComponent('Button');
 const Menu = videojs.getComponent('Menu');
 const Component = videojs.getComponent('Component');
 
-/**
- * The component for controlling the settings menu
- *
- * @param {Player|Object} player
- * @param {Object=} options
- * @extends MenuButton
- * @class SettingsMenuButton
- */
-class SettingsMenuButton extends MenuButton {
-
+class SettingsButton extends Button {
   constructor(player, options) {
     super(player, options);
 
-    this.el_.setAttribute('aria-label', 'Settings Menu');
+    this.dialog = player.addChild('settingsDialog');
+    this.dialogEl = this.dialog.el_;
+    this.menu = null;
 
-    this.on('mouseleave', videojs.bind(this, this.hideChildren));
+    this.panel = this.dialog.addChild('settingsPanel');
+
+    this.el_.setAttribute('aria-label', 'Settings Button');
+    this.buildMenu();
   }
 
-  /**
-   * Allow sub components to stack CSS class names
-   *
-   * @return {String} The constructed class name
-   * @method buildCSSClass
-   */
   buildCSSClass() {
     // vjs-icon-cog can be removed when the settings menu is integrated in video.js
-    return `vjs-settings-menu vjs-icon-cog ${super.buildCSSClass()}`;
+    return `vjs-icon-cog ${super.buildCSSClass()}`;
   }
 
-  /**
-   * Create the settings menu
-   *
-   * @return {Menu} Menu object populated with items
-   * @method createMenu
-   */
-  createMenu() {
-    let menu = new Menu(this.player());
+  handleClick() {
+    if (this.dialog.hasClass('vjs-hidden')) {
+      this.dialog.show();
+      this.setDialogSize(this.getComponentSize(this.menu));
+    }
+    else {
+      this.dialog.hide();
+    }
+  }
+
+  getComponentSize(element) {
+    let width = null;
+    let height = null;
+
+    // Could be component or just DOM element
+    if (element instanceof Component) {
+      width = element.el_.offsetWidth;
+      height = element.el_.offsetHeight;
+
+      // keep width/height as properties for direct use
+      element.width = width;
+      element.height = height;
+    }
+    else {
+      width = element.offsetWidth;
+      height = element.offsetHeight;
+    }
+
+    return [width, height];
+  }
+
+  setDialogSize([width, height]) {
+     this.dialogEl.style.width = `${width}px`;
+     this.dialogEl.style.height = `${height}px`;
+  }
+
+  buildMenu() {
+    this.menu = new Menu(this.player());
+    this.menu.addClass('vjs-main-menu');
     let entries = this.options_.entries;
 
     if (entries) {
-
       const openSubMenu = function() {
 
         if (videojs.hasClass(this.el_, 'open')) {
@@ -61,9 +82,9 @@ class SettingsMenuButton extends MenuButton {
 
       for (let entry of entries) {
 
-        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry);
+        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry, this);
 
-        menu.addChild(settingsMenuItem);
+        this.menu.addChild(settingsMenuItem);
 
         // Hide children to avoid sub menus stacking on top of each other
         // or having multiple menus open
@@ -74,13 +95,15 @@ class SettingsMenuButton extends MenuButton {
       }
     }
 
-    return menu;
+    this.panel.addChild(this.menu);
+
   }
 
   /**
    * Hide all the sub menus
    */
   hideChildren() {
+    console.log('hideChildren');
     for (let menuChild of this.menu.children()) {
       menuChild.hideSubMenu();
     }
@@ -88,7 +111,60 @@ class SettingsMenuButton extends MenuButton {
 
 }
 
-SettingsMenuButton.prototype.controlText_ = 'Settings Menu';
+class SettingsPanel extends Component {
+  constructor(player, options) {
+    super(player, options);
+  }
 
-Component.registerComponent('SettingsMenuButton', SettingsMenuButton);
-export default SettingsMenuButton;
+  /**
+   * Create the component's DOM element
+   *
+   * @return {Element}
+   * @method createEl
+   */
+  createEl() {
+    return super.createEl('div', {
+      className: 'vjs-settings-panel',
+      innerHTML: '',
+      tabIndex: -1
+    });
+  }
+}
+
+class SettingsDialog extends Component {
+  constructor(player, options) {
+    super(player, options);
+    this.hide();
+  }
+
+  /**
+   * Create the component's DOM element
+   *
+   * @return {Element}
+   * @method createEl
+   */
+  createEl() {
+    const uniqueId = this.id_;
+    const dialogLabelId = 'TTsettingsDialogLabel-' + uniqueId;
+    const dialogDescriptionId = 'TTsettingsDialogDescription-' + uniqueId;
+
+    return super.createEl('div', {
+      className: 'vjs-settings-dialog vjs-modal-overlay',
+      innerHTML: '',
+      tabIndex: -1
+    }, {
+      'role': 'dialog',
+      'aria-labelledby': dialogLabelId,
+      'aria-describedby': dialogDescriptionId
+    });
+  }
+
+}
+
+SettingsButton.prototype.controlText_ = 'Settings Button';
+
+Component.registerComponent('SettingsButton', SettingsButton);
+Component.registerComponent('SettingsDialog', SettingsDialog);
+Component.registerComponent('SettingsPanel', SettingsPanel);
+
+export { SettingsButton, SettingsDialog, SettingsPanel };
