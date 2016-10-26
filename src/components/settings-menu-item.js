@@ -64,14 +64,17 @@ class SettingsMenuItem extends MenuItem {
   }
 
   onSubmenuClick(event) {
-    let updateFn = this.update(event);
     let target = event.currentTarget;
 
     if (target.classList.contains('vjs-back-button')) {
       this.loadMainMenu();
     }
 
-    setTimeout(updateFn, 0);
+    // To update the sub menu value on click, setTimeout is needed because
+    // updating the value is not instant
+    setTimeout(() => {
+      this.update(event);
+    }, 0);
   }
 
   /**
@@ -233,12 +236,15 @@ class SettingsMenuItem extends MenuItem {
    *
    * @method update
    */
-  update() {
+  update(event) {
+    let target = event ? event.currentTarget : null;
+
     // Playback rate menu button doesn't get a vjs-selected class
     // or sets options_['selected'] on the selected playback rate.
     // Thus we get the submenu value based on the labelEl of playbackRateMenuButton
     if (this.subMenu instanceof playbackRateMenuButton) {
       this.settingsSubMenuValueEl_.innerHTML = this.subMenu.labelEl_.innerHTML;
+      this.loadMainMenu();
     } else {
       // Loop trough the submenu items to find the selected child
       for (let subMenuItem of this.subMenu.menu.children_) {
@@ -249,6 +255,10 @@ class SettingsMenuItem extends MenuItem {
         if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
           this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
         }
+      }
+
+      if (target && !target.classList.contains('vjs-back-button')) {
+        this.settingsButton.hideDialog();
       }
     }
   }

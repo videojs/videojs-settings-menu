@@ -4,6 +4,10 @@
  */
 import videojs from 'video.js';
 import SettingsMenuItem from './settings-menu-item.js';
+
+// Object polyfill
+// import '/node_modules/core-js/fn/object/assign.js';
+
 const MenuButton = videojs.getComponent('MenuButton');
 const Button = videojs.getComponent('Button');
 const Menu = videojs.getComponent('Menu');
@@ -12,6 +16,10 @@ const Component = videojs.getComponent('Component');
 class SettingsButton extends Button {
   constructor(player, options) {
     super(player, options);
+
+    let tech = player.tech_;
+    // tech.on('loadedQualityData', () => );
+    console.log(tech);
 
     this.addClass('vjs-settings');
 
@@ -105,7 +113,7 @@ class SettingsButton extends Button {
       };
 
       for (let entry of entries) {
-
+        console.log(entry, this.options_);
         let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry, this);
 
         this.menu.addChild(settingsMenuItem);

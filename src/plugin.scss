@@ -72,6 +72,10 @@ $easing: ease-out;
         transition: all $duration $easing;
         float: right;
 
+        li:hover {
+          cursor: pointer;
+        }
+
         .vjs-menu-item {
           padding-left: 5px;
           padding-right: 5px;
