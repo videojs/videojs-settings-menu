@@ -5,9 +5,6 @@
 import videojs from 'video.js';
 import SettingsMenuItem from './settings-menu-item.js';
 
-// Object polyfill
-// import '/node_modules/core-js/fn/object/assign.js';
-
 const MenuButton = videojs.getComponent('MenuButton');
 const Button = videojs.getComponent('Button');
 const Menu = videojs.getComponent('Menu');
@@ -16,10 +13,6 @@ const Component = videojs.getComponent('Component');
 class SettingsButton extends Button {
   constructor(player, options) {
     super(player, options);
-
-    let tech = player.tech_;
-    // tech.on('loadedQualityData', () => );
-    console.log(tech);
 
     this.addClass('vjs-settings');
 
@@ -31,6 +24,12 @@ class SettingsButton extends Button {
 
     this.el_.setAttribute('aria-label', 'Settings Button');
     this.buildMenu();
+
+
+    player.on('addsettingsitem', (event, data) => {
+      let [entry, options] = data;
+      this.addMenuItem(entry, options);
+    });
 
     player.on('click', (event) => {
       if (event.target.classList.contains('vjs-settings')) {
@@ -102,33 +101,32 @@ class SettingsButton extends Button {
     let entries = this.options_.entries;
 
     if (entries) {
-      const openSubMenu = function() {
+      for (let entry of entries) {
+        this.addMenuItem(entry, this.options_);
+      }
+    }
 
+    this.panel.addChild(this.menu);
+  }
+
+  addMenuItem(entry, options) {
+      const openSubMenu = function() {
         if (videojs.hasClass(this.el_, 'open')) {
           videojs.removeClass(this.el_, 'open');
         } else {
           videojs.addClass(this.el_, 'open');
         }
-
       };
 
-      for (let entry of entries) {
-        console.log(entry, this.options_);
-        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry, this);
+      let settingsMenuItem = new SettingsMenuItem(this.player(), options, entry, this);
+      this.menu.addChild(settingsMenuItem);
 
-        this.menu.addChild(settingsMenuItem);
+      // Hide children to avoid sub menus stacking on top of each other
+      // or having multiple menus open
+      settingsMenuItem.on('click', videojs.bind(this, this.hideChildren));
 
-        // Hide children to avoid sub menus stacking on top of each other
-        // or having multiple menus open
-        settingsMenuItem.on('click', videojs.bind(this, this.hideChildren));
-
-        // Wether to add or remove selected class on the settings sub menu element
-        settingsMenuItem.on('click', openSubMenu);
-      }
-    }
-
-    this.panel.addChild(this.menu);
-
+      // Wether to add or remove selected class on the settings sub menu element
+      // settingsMenuItem.on('click', openSubMenu);
   }
 
   resetChildren() {

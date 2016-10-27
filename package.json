@@ -77,7 +77,10 @@
     "test/"
   ],
   "dependencies": {
-    "video.js": "^5.6.0"
+    "video.js": "^5.6.0",
+    "videojs-hls-handler": "git+ssh://git@gitlab.webvideocore.net:player/videojs-hls-handler.git",
+    "videojs-hls-state-manager": "git+ssh://git@gitlab.webvideocore.net:player/videojs-hls-state-manager.git",
+    "videojs-quality-switch": "git+ssh://git@gitlab.webvideocore.net:player/videojs-quality-switch.git"
   },
   "devDependencies": {
     "babel": "^5.8.35",

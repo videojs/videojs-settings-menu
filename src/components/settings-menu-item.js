@@ -44,7 +44,7 @@ class SettingsMenuItem extends MenuItem {
     if (!SubMenuComponent) {
       throw new Error(`Component ${subMenuName} does not exist`);
     }
-    this.subMenu = new SubMenuComponent(this.player(), options);
+    this.subMenu = new SubMenuComponent(this.player(), options, menuButton, this);
 
     this.eventHandlers();
 
@@ -64,6 +64,7 @@ class SettingsMenuItem extends MenuItem {
   }
 
   onSubmenuClick(event) {
+    console.log('item click from settings');
     let target = event.currentTarget;
 
     if (target.classList.contains('vjs-back-button')) {
@@ -120,7 +121,6 @@ class SettingsMenuItem extends MenuItem {
     super.handleClick();
 
     this.mainMenu.el_.style.opacity = '0';
-
     // Wether to add or remove vjs-hidden class on the settingsSubMenuEl element
     if (videojs.hasClass(this.settingsSubMenuEl_, 'vjs-hidden')) {
       videojs.removeClass(this.settingsSubMenuEl_, 'vjs-hidden');
@@ -191,9 +191,9 @@ class SettingsMenuItem extends MenuItem {
   }
 
   reset() {
+    videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
     this.settingsSubMenuEl_.style.opacity = '0';
     this.setMargin();
-    this.hideSubMenu();
   }
 
   loadMainMenu() {
@@ -251,6 +251,7 @@ class SettingsMenuItem extends MenuItem {
         if (!(subMenuItem instanceof component)) {
           continue;
         }
+
         // Set submenu value based on what item is selected
         if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
           this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
