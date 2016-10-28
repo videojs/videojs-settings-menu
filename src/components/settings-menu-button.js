@@ -47,6 +47,7 @@ class SettingsButton extends Button {
       let children = this.menu.children();
 
       while (children.length > 0) {
+        children[0].dispose();
         this.menu.removeChild(children[0]);
       }
 
@@ -54,6 +55,7 @@ class SettingsButton extends Button {
     } else {
       let item = this.menu.getChildById(id);
 
+      item.dispose();
       this.menu.removeChild(item);
     }
 
@@ -64,6 +66,10 @@ class SettingsButton extends Button {
     let [entry, options] = data;
 
     this.addMenuItem(entry, options);
+
+    if (this.hasClass('vjs-hidden')) {
+      this.removeClass('vjs-hidden')
+    }
   }
 
   onUserInactive() {
