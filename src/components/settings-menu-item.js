@@ -50,6 +50,7 @@ class SettingsMenuItem extends MenuItem {
 
     player.ready(() => {
       this.build();
+      this.reset();
     });
   }
 
@@ -64,7 +65,6 @@ class SettingsMenuItem extends MenuItem {
   }
 
   onSubmenuClick(event) {
-    console.log('item click from settings');
     let target = event.currentTarget;
 
     if (target.classList.contains('vjs-back-button')) {
@@ -132,8 +132,7 @@ class SettingsMenuItem extends MenuItem {
       }, 0);
 
       this.settingsButton.setDialogSize(this.size);
-    }
-    else {
+    } else {
       videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
     }
   }
@@ -144,11 +143,13 @@ class SettingsMenuItem extends MenuItem {
    * @method createBackButton
    */
   createBackButton() {
-    this.backButton = this.subMenu.menu.addChild('MenuItem', {}, 0);
-    this.backButton.name_ = 'BackButton';
-    this.backButton.addClass('vjs-back-button');
-    this.backButton.el_.innerHTML = `Back to Main Menu<span class="vjs-control-text">Back Button</span>`;
-    this.backButton.el_.innerText = `Back to Main Menu`;
+    let button = this.backButton;
+
+    button = this.subMenu.menu.addChild('MenuItem', {}, 0);
+    button.name_ = 'BackButton';
+    button.addClass('vjs-back-button');
+    button.el_.innerHTML = 'Back to menu<span class="vjs-control-text">Back</span>';
+    button.el_.innerText = 'Back to menu';
   }
 
   /**
@@ -157,18 +158,17 @@ class SettingsMenuItem extends MenuItem {
    * @method PrefixedEvent
    */
   PrefixedEvent(element, type, callback, action = 'addEvent') {
-    let prefix = ["webkit", "moz", "MS", "o", ""];
+    let prefix = ['webkit', 'moz', 'MS', 'o', ''];
 
-    for (var p = 0; p < prefix.length; p++) {
+    for (let p = 0; p < prefix.length; p++) {
       if (!prefix[p]) {
         type = type.toLowerCase();
       }
 
       if (action === 'addEvent') {
-        element.addEventListener(prefix[p]+type, callback, false);
-      }
-      else if (action === 'removeEvent'){
-        element.removeEventListener(prefix[p]+type, callback, false);
+        element.addEventListener(prefix[p] + type, callback, false);
+      } else if (action === 'removeEvent') {
+        element.removeEventListener(prefix[p] + type, callback, false);
       }
     }
   }
@@ -176,9 +176,6 @@ class SettingsMenuItem extends MenuItem {
   onTransitionEnd(event) {
     if (event.propertyName !== 'margin-right') {
       return;
-    }
-
-    if (this.menuToLoad === 'submenu') {
     }
 
     if (this.menuToLoad === 'mainmenu') {
@@ -220,15 +217,17 @@ class SettingsMenuItem extends MenuItem {
 
     this.update();
 
-    // Required for transitions
-    this.settingsSubMenuEl_.style.opacity = '0';
-
     this.createBackButton();
     this.getSize();
     this.bindClickEvents();
 
     // prefixed event listeners for CSS TransitionEnd
-    this.PrefixedEvent(this.settingsSubMenuEl_, "TransitionEnd", this.transitionEndHandler, 'addEvent');
+    this.PrefixedEvent(
+      this.settingsSubMenuEl_,
+      'TransitionEnd',
+      this.transitionEndHandler,
+      'addEvent'
+    );
   }
 
   /**
@@ -276,15 +275,16 @@ class SettingsMenuItem extends MenuItem {
   // save size of submenus on first init
   // if number of submenu items change dinamically more logic will be needed
   getSize() {
-      this.dialog.removeClass('vjs-hidden');
-      this.size = this.settingsButton.getComponentSize(this.settingsSubMenuEl_);
-      this.setMargin();
-      this.dialog.addClass('vjs-hidden');
-      videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
+    this.dialog.removeClass('vjs-hidden');
+    this.size = this.settingsButton.getComponentSize(this.settingsSubMenuEl_);
+    this.setMargin();
+    this.dialog.addClass('vjs-hidden');
+    videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
   }
 
   setMargin() {
-    let [width, height] = this.size;
+    let [width] = this.size;
+
     this.settingsSubMenuEl_.style.marginRight = `-${width}px`;
   }
 
@@ -292,6 +292,11 @@ class SettingsMenuItem extends MenuItem {
    * Hide the sub menu
    */
   hideSubMenu() {
+    // after removing settings item this.el_ === null
+    if (!this.el_) {
+      return;
+    }
+
     if (videojs.hasClass(this.el_, 'open')) {
       videojs.addClass(this.settingsSubMenuEl_, 'vjs-hidden');
       videojs.removeClass(this.el_, 'open');

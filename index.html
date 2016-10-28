@@ -28,6 +28,12 @@
   <ul>
     <li><a href="/test/">Run unit tests in browser.</a></li>
     <li><a href="/docs/api/">Read generated docs.</a></li>
+    <br>
+    <button id="add">Add Settings Item</button>
+     <br>
+     <br>
+    <button id="dispose-all">Dispose All Settings Items</button>
+    <button id="dispose">Dispose Single Settings Item</button>
   </ul>
   <script src="/node_modules/video.js/dist/video.js"></script>
   <script src="/dist/videojs-settings-menu.js"></script>
@@ -66,6 +72,22 @@
       });
       player.play();
     }(window, window.videojs));
+
+    var addBtn = document.getElementById('add');
+    var disposeBtn = document.getElementById('dispose');
+    var disposeAllBtn = document.getElementById('dispose-all');
+
+    disposeBtn.addEventListener('click', function(){
+      player.trigger('disposesettingsitem', 'videojs-settings-menu-player_component_207');
+    });
+
+    disposeAllBtn.addEventListener('click', function(){
+      player.trigger('disposesettingsitem');
+    });
+
+    addBtn.addEventListener('click', function(){
+      player.trigger('addsettingsitem', ['ChaptersButton', {}]);
+    });
   </script>
 </body>
 </html>
