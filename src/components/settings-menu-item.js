@@ -29,7 +29,6 @@ class SettingsMenuItem extends MenuItem {
     this.settingsButton = menuButton;
     this.dialog = this.settingsButton.dialog;
     this.mainMenu = this.settingsButton.menu;
-
     this.panel = this.dialog.getChild('settingsPanel');
     this.panelEl = this.panel.el_;
 

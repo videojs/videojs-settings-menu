@@ -13,23 +13,23 @@ class SettingsButton extends Button {
   constructor(player, options) {
     super(player, options);
 
-    this.addClass('vjs-settings');
     this.playerComponent = player;
     this.dialog = this.playerComponent.addChild('settingsDialog');
     this.dialogEl = this.dialog.el_;
     this.menu = null;
-
     this.panel = this.dialog.addChild('settingsPanel');
 
+    this.addClass('vjs-settings');
     this.el_.setAttribute('aria-label', 'Settings Button');
 
+    // Event handlers
     this.addSettingsItemHandler = this.onAddSettingsItem.bind(this);
     this.disposeSettingsItemHandler = this.onDisposeSettingsItem.bind(this);
     this.playerClickHandler = this.onPlayerClick.bind(this);
+    this.userInactiveHandler = this.onUserInactive.bind(this);
 
     this.buildMenu();
     this.bindEvents();
-
   }
 
   onPlayerClick(event) {
@@ -66,10 +66,17 @@ class SettingsButton extends Button {
     this.addMenuItem(entry, options);
   }
 
+  onUserInactive() {
+    if (!this.dialog.hasClass('vjs-hidden')) {
+      this.hideDialog();
+    }
+  }
+
   bindEvents() {
     this.playerComponent.on('click', this.playerClickHandler);
     this.playerComponent.on('addsettingsitem', this.addSettingsItemHandler);
     this.playerComponent.on('disposesettingsitem', this.disposeSettingsItemHandler);
+    this.playerComponent.on('userinactive', this.userInactiveHandler);
   }
 
   buildCSSClass() {
