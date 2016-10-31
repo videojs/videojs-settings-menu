@@ -32,7 +32,8 @@
     "preversion": "npm test",
     "version": "babel-node scripts/version.js",
     "postversion": "babel-node scripts/postversion.js",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "watch:js": "watch \"npm-run-all build:js:babel build:js:browserify\" ./src"
   },
   "keywords": [
     "videojs",
@@ -76,7 +77,10 @@
     "test/"
   ],
   "dependencies": {
-    "video.js": "^5.6.0"
+    "video.js": "^5.6.0",
+    "videojs-hls-handler": "git+ssh://git@gitlab.webvideocore.net:player/videojs-hls-handler.git",
+    "videojs-hls-state-manager": "git+ssh://git@gitlab.webvideocore.net:player/videojs-hls-state-manager.git",
+    "videojs-quality-switch": "git+ssh://git@gitlab.webvideocore.net:player/videojs-quality-switch.git"
   },
   "devDependencies": {
     "babel": "^5.8.35",
@@ -107,6 +111,7 @@
     "sinon": "~1.14.0",
     "uglify-js": "^2.6.1",
     "videojs-languages": "^1.0.0",
-    "videojs-standard": "^4.0.0"
+    "videojs-standard": "^4.0.0",
+    "watch": "^1.0.1"
   }
 }
