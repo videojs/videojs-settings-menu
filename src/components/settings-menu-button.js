@@ -4,7 +4,9 @@
  */
 import videojs from 'video.js';
 import SettingsMenuItem from './settings-menu-item.js';
-import 'babel-polyfill';
+// only one instance of babel-polyfill is allowed
+// when imported with other videojs plygins
+// import 'babel-polyfill';
 
 const Button = videojs.getComponent('Button');
 const Menu = videojs.getComponent('Menu');
@@ -76,7 +78,7 @@ class SettingsButton extends Button {
 
   onUserInactive() {
     if (!this.dialog.hasClass('vjs-hidden')) {
-      // this.hideDialog();
+      this.hideDialog();
     }
   }
 
