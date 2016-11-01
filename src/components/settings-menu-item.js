@@ -30,7 +30,8 @@ class SettingsMenuItem extends MenuItem {
     this.dialog = this.settingsButton.dialog;
     this.mainMenu = this.settingsButton.menu;
     this.panel = this.dialog.getChild('settingsPanel');
-    this.panelEl = this.panel.el_;
+    this.panelChild = this.panel.getChild('settingsPanelChild');
+    this.panelChildEl = this.panelChild.el_;
 
     this.size = null;
 
@@ -64,10 +65,17 @@ class SettingsMenuItem extends MenuItem {
   }
 
   onSubmenuClick(event) {
-    let target = event.currentTarget;
+    let target = null;
+
+    if (event.type === 'tap') {
+      target = event.target;
+    } else {
+      target = event.currentTarget;
+    }
 
     if (target.classList.contains('vjs-back-button')) {
       this.loadMainMenu();
+      return;
     }
 
     // To update the sub menu value on click, setTimeout is needed because
@@ -212,7 +220,7 @@ class SettingsMenuItem extends MenuItem {
   build() {
     this.settingsSubMenuTitleEl_.innerHTML = this.subMenu.controlText_ + ':';
     this.settingsSubMenuEl_.appendChild(this.subMenu.menu.el_);
-    this.panelEl.appendChild(this.settingsSubMenuEl_);
+    this.panelChildEl.appendChild(this.settingsSubMenuEl_);
 
     this.update();
 
@@ -235,7 +243,13 @@ class SettingsMenuItem extends MenuItem {
    * @method update
    */
   update(event) {
-    let target = event ? event.currentTarget : null;
+    let target = null;
+
+    if (event && event.type === 'tap') {
+      target = event.target;
+    } else if (event) {
+      target = event.currentTarget;
+    }
 
     // Playback rate menu button doesn't get a vjs-selected class
     // or sets options_['selected'] on the selected playback rate.
@@ -267,7 +281,7 @@ class SettingsMenuItem extends MenuItem {
       if (!(item instanceof component)) {
         continue;
       }
-      item.on('click', this.submenuClickHandler);
+      item.on(['tap', 'click'], this.submenuClickHandler);
     }
   }
 

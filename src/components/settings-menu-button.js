@@ -4,6 +4,7 @@
  */
 import videojs from 'video.js';
 import SettingsMenuItem from './settings-menu-item.js';
+import 'babel-polyfill';
 
 const Button = videojs.getComponent('Button');
 const Menu = videojs.getComponent('Menu');
@@ -18,6 +19,7 @@ class SettingsButton extends Button {
     this.dialogEl = this.dialog.el_;
     this.menu = null;
     this.panel = this.dialog.addChild('settingsPanel');
+    this.panelChild = this.panel.addChild('settingsPanelChild');
 
     this.addClass('vjs-settings');
     this.el_.setAttribute('aria-label', 'Settings Button');
@@ -68,13 +70,13 @@ class SettingsButton extends Button {
     this.addMenuItem(entry, options);
 
     if (this.hasClass('vjs-hidden')) {
-      this.removeClass('vjs-hidden')
+      this.removeClass('vjs-hidden');
     }
   }
 
   onUserInactive() {
     if (!this.dialog.hasClass('vjs-hidden')) {
-      this.hideDialog();
+      // this.hideDialog();
     }
   }
 
@@ -132,6 +134,21 @@ class SettingsButton extends Button {
   }
 
   setDialogSize([width, height]) {
+    if (typeof height !== 'number') {
+      return;
+    }
+
+    let offset = this.options_.setup.maxHeightOffset;
+    let maxHeight = this.playerComponent.el_.offsetHeight - offset;
+
+    if (height > maxHeight) {
+      height = maxHeight;
+      width += 17;
+      this.panel.el_.style.maxHeight = `${height}px`;
+    } else if (this.panel.el_.style.maxHeight !== '') {
+      this.panel.el_.style.maxHeight = '';
+    }
+
     this.dialogEl.style.width = `${width}px`;
     this.dialogEl.style.height = `${height}px`;
   }
@@ -147,7 +164,7 @@ class SettingsButton extends Button {
       }
     }
 
-    this.panel.addChild(this.menu);
+    this.panelChild.addChild(this.menu);
   }
 
   addMenuItem(entry, options) {
@@ -208,6 +225,26 @@ class SettingsPanel extends Component {
   }
 }
 
+class SettingsPanelChild extends Component {
+  constructor(player, options) {
+    super(player, options);
+  }
+
+  /**
+   * Create the component's DOM element
+   *
+   * @return {Element}
+   * @method createEl
+   */
+  createEl() {
+    return super.createEl('div', {
+      className: 'vjs-settings-panel-child',
+      innerHTML: '',
+      tabIndex: -1
+    });
+  }
+}
+
 class SettingsDialog extends Component {
   constructor(player, options) {
     super(player, options);
@@ -243,5 +280,6 @@ SettingsButton.prototype.controlText_ = 'Settings Button';
 Component.registerComponent('SettingsButton', SettingsButton);
 Component.registerComponent('SettingsDialog', SettingsDialog);
 Component.registerComponent('SettingsPanel', SettingsPanel);
+Component.registerComponent('SettingsPanelChild', SettingsPanelChild);
 
-export { SettingsButton, SettingsDialog, SettingsPanel };
+export { SettingsButton, SettingsDialog, SettingsPanel, SettingsPanelChild };

@@ -12,8 +12,8 @@ $easing: ease-out;
 
   .vjs-settings-dialog {
     position: absolute;
-    right: 1em;
-    bottom: 3.5em;
+    right: .5em;
+    bottom: 3em;
     background-color: #2B333F;
     background-color: rgba(43, 51, 63, 0.75);
     color: #fff;
@@ -47,7 +47,9 @@ $easing: ease-out;
       right: 0;
       overflow-y: auto;
       overflow-x: hidden;
+    }
 
+    .vjs-settings-panel-child {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
@@ -63,6 +65,7 @@ $easing: ease-out;
       }
 
       > .vjs-menu {
+        flex: 1;
         min-width: 250px;
       }
 
@@ -70,7 +73,6 @@ $easing: ease-out;
       > .vjs-settings-sub-menu {
         -webkit-transition: all $duration $easing;
         transition: all $duration $easing;
-        float: right;
 
         li:hover {
           cursor: pointer;
