@@ -281,21 +281,20 @@ class SettingsMenuItem extends MenuItem {
         }
 
         switch (subMenu) {
-          case 'subtitlesButton':
-            // subtitlesButton entering default check twice and overwriting
-            // selected label in main manu
-            if (subMenuItem.hasClass('vjs-selected')) {
-              this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
-            }
-            break;
+        case 'subtitlesButton':
+          // subtitlesButton entering default check twice and overwriting
+          // selected label in main manu
+          if (subMenuItem.hasClass('vjs-selected')) {
+            this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
+          }
+          break;
 
-          default:
-            // Set submenu value based on what item is selected
-            if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
-              this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
-            }
+        default:
+          // Set submenu value based on what item is selected
+          if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
+            this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
+          }
         }
-
       }
 
       if (target && !target.classList.contains('vjs-back-button')) {
