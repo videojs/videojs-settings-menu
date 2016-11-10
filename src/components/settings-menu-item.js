@@ -6,6 +6,7 @@ import videojs from 'video.js';
 
 const MenuItem = videojs.getComponent('MenuItem');
 const playbackRateMenuButton = videojs.getComponent('PlaybackRateMenuButton');
+const subtitlesButton = videojs.getComponent('SubtitlesButton');
 const component = videojs.getComponent('Component');
 
 const toTitleCase = function(string) {
@@ -237,6 +238,20 @@ class SettingsMenuItem extends MenuItem {
     );
   }
 
+  checkInstance() {
+    let subMenu = '';
+
+    if (this.subMenu instanceof playbackRateMenuButton) {
+      subMenu = 'playbackRateMenuButton';
+    }
+
+    if (this.subMenu instanceof subtitlesButton) {
+      subMenu = 'subtitlesButton';
+    }
+
+    return subMenu;
+  }
+
   /**
    * Update the sub menus
    *
@@ -244,6 +259,7 @@ class SettingsMenuItem extends MenuItem {
    */
   update(event) {
     let target = null;
+    let subMenu = this.checkInstance();
 
     if (event && event.type === 'tap') {
       target = event.target;
@@ -254,7 +270,7 @@ class SettingsMenuItem extends MenuItem {
     // Playback rate menu button doesn't get a vjs-selected class
     // or sets options_['selected'] on the selected playback rate.
     // Thus we get the submenu value based on the labelEl of playbackRateMenuButton
-    if (this.subMenu instanceof playbackRateMenuButton) {
+    if (subMenu === 'playbackRateMenuButton') {
       this.settingsSubMenuValueEl_.innerHTML = this.subMenu.labelEl_.innerHTML;
       this.loadMainMenu();
     } else {
@@ -264,10 +280,22 @@ class SettingsMenuItem extends MenuItem {
           continue;
         }
 
-        // Set submenu value based on what item is selected
-        if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
-          this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
+        switch (subMenu) {
+          case 'subtitlesButton':
+            // subtitlesButton entering default check twice and overwriting
+            // selected label in main manu
+            if (subMenuItem.hasClass('vjs-selected')) {
+              this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
+            }
+            break;
+
+          default:
+            // Set submenu value based on what item is selected
+            if (subMenuItem.options_.selected || subMenuItem.hasClass('vjs-selected')) {
+              this.settingsSubMenuValueEl_.innerHTML = subMenuItem.options_.label;
+            }
         }
+
       }
 
       if (target && !target.classList.contains('vjs-back-button')) {
