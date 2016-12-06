@@ -5,8 +5,6 @@
 import videojs from 'video.js';
 
 const MenuItem = videojs.getComponent('MenuItem');
-const playbackRateMenuButton = videojs.getComponent('PlaybackRateMenuButton');
-const subtitlesButton = videojs.getComponent('SubtitlesButton');
 const component = videojs.getComponent('Component');
 
 const toTitleCase = function(string) {
@@ -238,20 +236,6 @@ class SettingsMenuItem extends MenuItem {
     );
   }
 
-  checkInstance() {
-    let subMenu = '';
-
-    if (this.subMenu instanceof playbackRateMenuButton) {
-      subMenu = 'playbackRateMenuButton';
-    }
-
-    if (this.subMenu instanceof subtitlesButton) {
-      subMenu = 'subtitlesButton';
-    }
-
-    return subMenu;
-  }
-
   /**
    * Update the sub menus
    *
@@ -259,7 +243,7 @@ class SettingsMenuItem extends MenuItem {
    */
   update(event) {
     let target = null;
-    let subMenu = this.checkInstance();
+    let subMenu = this.subMenu.constructor.name;
 
     if (event && event.type === 'tap') {
       target = event.target;
@@ -270,7 +254,7 @@ class SettingsMenuItem extends MenuItem {
     // Playback rate menu button doesn't get a vjs-selected class
     // or sets options_['selected'] on the selected playback rate.
     // Thus we get the submenu value based on the labelEl of playbackRateMenuButton
-    if (subMenu === 'playbackRateMenuButton') {
+    if (subMenu === 'PlaybackRateMenuButton') {
       this.settingsSubMenuValueEl_.innerHTML = this.subMenu.labelEl_.innerHTML;
       this.loadMainMenu();
     } else {
@@ -281,7 +265,8 @@ class SettingsMenuItem extends MenuItem {
         }
 
         switch (subMenu) {
-        case 'subtitlesButton':
+        case 'SubtitlesButton':
+        case 'CaptionsButton':
           // subtitlesButton entering default check twice and overwriting
           // selected label in main manu
           if (subMenuItem.hasClass('vjs-selected')) {
