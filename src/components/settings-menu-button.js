@@ -4,6 +4,7 @@
  */
 import videojs from 'video.js';
 import SettingsMenuItem from './settings-menu-item.js';
+import * as utils from './utils';
 // only one instance of babel-polyfill is allowed
 // when imported with other videojs plygins
 // import 'babel-polyfill';
@@ -46,8 +47,8 @@ class SettingsButton extends Button {
     }
   }
 
-  onDisposeSettingsItem(event, id) {
-    if (id === undefined) {
+  onDisposeSettingsItem(event, name) {
+    if (name === undefined) {
       let children = this.menu.children();
 
       while (children.length > 0) {
@@ -57,13 +58,17 @@ class SettingsButton extends Button {
 
       this.addClass('vjs-hidden');
     } else {
-      let item = this.menu.getChildById(id);
+      let item = this.menu.getChild(name);
 
       item.dispose();
       this.menu.removeChild(item);
     }
 
     this.hideDialog();
+
+    if(this.options_.entries.length === 0) {
+      this.addClass('vjs-hidden');
+    }
   }
 
   onAddSettingsItem(event, data) {
@@ -160,10 +165,13 @@ class SettingsButton extends Button {
     this.menu.addClass('vjs-main-menu');
     let entries = this.options_.entries;
 
-    if (entries) {
-      for (let entry of entries) {
-        this.addMenuItem(entry, this.options_);
-      }
+    if(entries.length === 0) {
+      this.addClass('vjs-hidden');
+      return;
+    }
+
+    for (let entry of entries) {
+      this.addMenuItem(entry, this.options_);
     }
 
     this.panelChild.addChild(this.menu);
@@ -178,6 +186,7 @@ class SettingsButton extends Button {
       }
     };
 
+    options.name = utils.toTitleCase(entry);
     let settingsMenuItem = new SettingsMenuItem(this.player(), options, entry, this);
 
     this.menu.addChild(settingsMenuItem);

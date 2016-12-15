@@ -3,13 +3,10 @@
  */
 
 import videojs from 'video.js';
+import * as utils from './utils';
 
 const MenuItem = videojs.getComponent('MenuItem');
 const component = videojs.getComponent('Component');
-
-const toTitleCase = function(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
 
 /**
  * The specific menu item type for selecting a setting
@@ -37,7 +34,7 @@ class SettingsMenuItem extends MenuItem {
     // keep state of what menu type is loading next
     this.menuToLoad = 'mainmenu';
 
-    const subMenuName = toTitleCase(entry);
+    const subMenuName = utils.toTitleCase(entry);
     const SubMenuComponent = videojs.getComponent(subMenuName);
 
     if (!SubMenuComponent) {
