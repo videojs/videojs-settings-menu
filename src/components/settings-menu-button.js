@@ -60,8 +60,10 @@ class SettingsButton extends Button {
     } else {
       let item = this.menu.getChild(name);
 
-      item.dispose();
-      this.menu.removeChild(item);
+      if(item) {
+        item.dispose();
+        this.menu.removeChild(item);
+      }
     }
 
     this.hideDialog();
