@@ -77,10 +77,7 @@ class SettingsButton extends Button {
     let [entry, options] = data;
 
     this.addMenuItem(entry, options);
-
-    if (this.hasClass('vjs-hidden')) {
-      this.removeClass('vjs-hidden');
-    }
+    this.removeClass('vjs-hidden');
   }
 
   onUserInactive() {
@@ -169,6 +166,7 @@ class SettingsButton extends Button {
 
     if(entries.length === 0) {
       this.addClass('vjs-hidden');
+      this.panelChild.addChild(this.menu);
       return;
     }
 
