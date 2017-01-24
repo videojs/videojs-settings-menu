@@ -240,7 +240,7 @@ class SettingsMenuItem extends MenuItem {
    */
   update(event) {
     let target = null;
-    let subMenu = this.subMenu.constructor.name;
+    let subMenu = this.subMenu.name();
 
     if (event && event.type === 'tap') {
       target = event.target;
