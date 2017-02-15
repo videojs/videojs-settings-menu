@@ -22,6 +22,7 @@ class SettingsMenuButton extends MenuButton {
     super(player, options);
 
     this.el_.setAttribute('aria-label', 'Settings Menu');
+    videojs.dom.addClass(this.$('.vjs-icon-placeholder'), 'vjs-icon-cog');
 
     this.on('mouseleave', videojs.bind(this, this.hideChildren));
   }
@@ -33,48 +34,17 @@ class SettingsMenuButton extends MenuButton {
    * @method buildCSSClass
    */
   buildCSSClass() {
-    // vjs-icon-cog can be removed when the settings menu is integrated in video.js
-    return `vjs-settings-menu vjs-icon-cog ${super.buildCSSClass()}`;
+    return `vjs-settings-menu ${super.buildCSSClass()}`;
   }
 
-  /**
-   * Create the settings menu
-   *
-   * @return {Menu} Menu object populated with items
-   * @method createMenu
-   */
-  createMenu() {
-    let menu = new Menu(this.player());
-    let entries = this.options_.entries;
+  createItems() {
+    const entries = this.options_.entries;
+    const player = this.player();
+    const opts = this.options_;
 
-    if (entries) {
+    const items = entries.map((entry) => new SettingsMenuItem(player, opts, entry))
 
-      const openSubMenu = function() {
-
-        if (videojs.hasClass(this.el_, 'open')) {
-          videojs.removeClass(this.el_, 'open');
-        } else {
-          videojs.addClass(this.el_, 'open');
-        }
-
-      };
-
-      for (let entry of entries) {
-
-        let settingsMenuItem = new SettingsMenuItem(this.player(), this.options_, entry);
-
-        menu.addChild(settingsMenuItem);
-
-        // Hide children to avoid sub menus stacking on top of each other
-        // or having multiple menus open
-        settingsMenuItem.on('click', videojs.bind(this, this.hideChildren));
-
-        // Wether to add or remove selected class on the settings sub menu element
-        settingsMenuItem.on('click', openSubMenu);
-      }
-    }
-
-    return menu;
+    return items;
   }
 
   /**

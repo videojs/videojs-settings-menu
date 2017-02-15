@@ -24,15 +24,16 @@ const toTitleCase = function(string) {
 class SettingsMenuItem extends MenuItem {
 
   constructor(player, options, entry) {
-    super(player, options);
-
     const subMenuName = toTitleCase(entry);
-
     const SubMenuComponent = videojs.getComponent(subMenuName);
 
     if (!SubMenuComponent) {
       throw new Error(`Component ${subMenuName} does not exist`);
     }
+
+    super(player, options);
+    
+    videojs.dom.addClass(this.$('.vjs-menu-item-text'), 'vjs-settings-sub-menu-title');
 
     this.subMenu = new SubMenuComponent(this.player(), options);
 
@@ -60,16 +61,7 @@ class SettingsMenuItem extends MenuItem {
    * @method createEl
    */
   createEl() {
-    // Hide this component by default
-    const el = videojs.createEl('li', {
-      className: 'vjs-menu-item'
-    });
-
-    this.settingsSubMenuTitleEl_ = videojs.createEl('div', {
-      className: 'vjs-settings-sub-menu-title'
-    });
-
-    el.appendChild(this.settingsSubMenuTitleEl_);
+    const el = super.createEl();
 
     this.settingsSubMenuValueEl_ = videojs.createEl('div', {
       className: 'vjs-settings-sub-menu-value'
@@ -111,7 +103,7 @@ class SettingsMenuItem extends MenuItem {
    * @method update
    */
   update() {
-    this.settingsSubMenuTitleEl_.innerHTML = this.subMenu.controlText_ + ':';
+    this.$('.vjs-menu-item-text').innerHTML = this.subMenu.controlText_ + ':';
     this.settingsSubMenuEl_.appendChild(this.subMenu.menu.el_);
 
     // Playback rate menu button doesn't get a vjs-selected class
