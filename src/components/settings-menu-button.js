@@ -43,7 +43,7 @@ class SettingsMenuButton extends MenuButton {
     const opts = this.options_;
 
     const items = entries.map((entry) => {
-      const item = new SettingsMenuItem(player, opts, entry));
+      const item = new SettingsMenuItem(player, opts, entry);
 
       // Hide children to avoid sub menus stacking on top of each other
       // or having multiple menus open
