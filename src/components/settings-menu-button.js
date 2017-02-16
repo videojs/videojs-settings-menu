@@ -42,7 +42,18 @@ class SettingsMenuButton extends MenuButton {
     const player = this.player();
     const opts = this.options_;
 
-    const items = entries.map((entry) => new SettingsMenuItem(player, opts, entry))
+    const items = entries.map((entry) => {
+      const item = new SettingsMenuItem(player, opts, entry));
+
+      // Hide children to avoid sub menus stacking on top of each other
+      // or having multiple menus open
+      item.on('click', videojs.bind(this, this.hideChildren));
+
+      // Whether to add or remove selected class on the settings sub menu element
+      item.on('click', item.openSubMenu);
+
+      return item;
+    });
 
     return items;
   }

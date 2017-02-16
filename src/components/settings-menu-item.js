@@ -125,6 +125,16 @@ class SettingsMenuItem extends MenuItem {
     }
   }
 
+  openSubMenu() {
+    if (videojs.hasClass(this.el_, 'open')) {
+      videojs.removeClass(this.el_, 'open');
+    } else {
+      videojs.addClass(this.el_, 'open');
+    }
+  }
+
+
+
   /**
    * Hide the sub menu
    */
